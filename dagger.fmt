@@ -3,3 +3,6 @@
 %format <<< = "\lll "
 %format family = "\mathbf{family}"
 %format hiding = "\mathbf{hiding}"
+%format *** = "\circledast "
+%format &&& = "\vDash "
+%format ~> = "\rightsquigarrow "

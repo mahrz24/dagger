@@ -8,7 +8,9 @@ Graphical Models, directed acyclic graphs (DAGs) of random variables, are a powe
 
 [TODO More motivation/introductions/examples]
 
-We will show that labeled heterogeneously typed DAGs are Arrows and thus allow a very elegant syntax of specifying graphical models. Firstly though, we will reimplement the distribution Monad as an RMonad [as proposed in the Wiki] which allows us to use a map as backing data structure (with the monad restriction constraint Ord). This frees us from calling @norm@ and makes the implementation more efficient [why more efficient?]. Test Test
+We will show that labeled heterogeneously typed DAGs are Arrows and thus allow a very elegant syntax of specifying graphical models. Firstly though, we will reimplement the distribution Monad as an RMonad [as proposed in the Wiki] which allows us to use a map as backing data structure (with the monad restriction constraint Ord). This frees us from calling @norm@ and makes the implementation more efficient [why more efficient?].
+
+In theory this could be done with some representation of arbitrary probability spaces as well (think of automatic differentiation on probability distributions on measurable spaces). For now we will restrict ourselves to finite values random variables represented by probability distributions (points of the n-simplex).
 
 > {-# LANGUAGE RebindableSyntax #-}
 > {-# LANGUAGE TypeFamilies #-}
@@ -19,9 +21,8 @@ We will show that labeled heterogeneously typed DAGs are Arrows and thus allow a
 > import Data.Map
 > import Data.Suitable
 > import Control.RMonad
-> import Prelude hiding (Monad, (>>=), fail, (.))
-> import qualified Prelude as P
-> import Restricted
+> import Prelude hiding (Monad, (>>=), fail)
+> import qualified Restricted as R
 
 Distribution RMonad
 ===================
@@ -48,14 +49,14 @@ Then we can implement the rmonad instance as follows
 >                   $ \ DistConstraints
 >                       -> withResConstraints $ \ DistConstraints -> 
 >                          Dist $ fromListWith (+) 
->                                 [(y,q*p) | (x,p) <- (toList P.. decons) d, 
->                                            (y,q) <- (toList P.. decons) (f x)]
+>                                 [(y,q*p) | (x,p) <- (toList . decons) d, 
+>                                            (y,q) <- (toList . decons) (f x)]
 >   fail _   = Dist empty
 
 > instance (Ord prob, Ord a, Num prob, Show prob, Show a) => Show (Dist prob a) where
->    show = show P.. (\x -> (toAscList P.. decons) x)
+>    show = show . (\x -> (toAscList . decons) x)
 
-The bind operator $a>>=(\backslash a -> b\, a)$ is equal to the following marginalization: [more explanations again]
+The bind operator $a\Rrightarrow (\lambda a . b\, a)$ is equal to the following marginalization: [more explanations again]
 $$ p(b) = \sum_a p(b \mid a) p(a). $$
 Because we are using a restricted monad, we also have to use restricted categories and restricted arrows, which we first have to build. This is a restricted category implementation
 
@@ -66,17 +67,17 @@ We can use the restricted category to define a conditional distribution type
 > type Source prob a = Conditional prob () a
 > 
 > 
-> data instance Constraints2 (Conditional prob) a b = (Ord a, Ord b) => ConditionalConstraints
+> data instance R.Constraints2 (Conditional prob) a b = (Ord a, Ord b) => ConditionalConstraints
 > 
-> instance (Ord a, Ord b) => Suitable2 (Conditional prob) a b where
+> instance (Ord a, Ord b) => R.Suitable2 (Conditional prob) a b where
 >   constraints2 = ConditionalConstraints
 > 
-> instance (Num prob) => RCategory (Conditional prob) where
+> instance (Num prob) => R.RCategory (Conditional prob) where
 >   id = Conditional (\a -> certainly a)
 >   (.) cg@(Conditional g) cf@(Conditional f) = 
->     withConstraintsOf2 cg
->       (\ ConditionalConstraints -> withConstraintsOf2 cf
->         (\ ConditionalConstraints -> withResConstraints2
+>     R.withConstraintsOf2 cg
+>       (\ ConditionalConstraints -> R.withConstraintsOf2 cf
+>         (\ ConditionalConstraints -> R.withResConstraints2
 >           (\ ConditionalConstraints -> (Conditional (\a -> (f a) >>= g)))))
 
 \appendix
