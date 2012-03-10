@@ -1,2 +1,3 @@
 %include $format$
-$body$d
+%include dagger.fmt
+$body$

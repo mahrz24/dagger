@@ -1,5 +1,10 @@
+Restricted
+==========
 
-# Restricted
+> {-# LANGUAGE MultiParamTypeClasses, TypeFamilies #-}
+
+> module Restricted where
+> import Prelude hiding ((.))
 
 A restricted category implementation
 
@@ -27,3 +32,5 @@ A restricted category implementation
 > 
 > (>>>) :: (Suitable2 cat b c, Suitable2 cat a b, Suitable2 cat a c, RCategory cat) => cat a b -> cat b c -> cat a c
 > f >>> g = g . f
+
+What?

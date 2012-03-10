@@ -1,0 +1,5 @@
+%format >>= = "\Rrightarrow "
+%format >>> = "\ggg "
+%format <<< = "\lll "
+%format family = "\mathbf{family}"
+%format hiding = "\mathbf{hiding}"

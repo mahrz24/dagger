@@ -1,9 +1,8 @@
 % Dagger: Typed Graphical Models in Haskell
 % Malte Harder
 
-
-
-# Motivation
+Motivation
+==========
 
 Graphical Models, directed acyclic graphs (DAGs) of random variables, are a powerful tool in Bayesian statistics, information theory, machine learning and probability theory in general. Current probability theory libraries in Haskell already provide an elegant syntax for simple probabilistic calculations. However, given more complex models the syntax not only becomes more clumsy: Calculations that depend on the graph structure of the model need a typed and labeled DAG data structure.
 
@@ -11,14 +10,21 @@ Graphical Models, directed acyclic graphs (DAGs) of random variables, are a powe
 
 We will show that labeled heterogeneously typed DAGs are Arrows and thus allow a very elegant syntax of specifying graphical models. Firstly though, we will reimplement the distribution Monad as an RMonad [as proposed in the Wiki] which allows us to use a map as backing data structure (with the monad restriction constraint Ord). This frees us from calling @norm@ and makes the implementation more efficient [why more efficient?]. Test Test
 
-> {-# LANGUAGE RebindableSyntax, TypeFamilies, FlexibleInstances, MultiParamTypeClasses, RankNTypes #-}
+> {-# LANGUAGE RebindableSyntax #-}
+> {-# LANGUAGE TypeFamilies #-}
+> {-# LANGUAGE FlexibleInstances #-}
+> {-# LANGUAGE MultiParamTypeClasses #-}
+> {-# LANGUAGE RankNTypes #-}
+
 > import Data.Map
 > import Data.Suitable
 > import Control.RMonad
 > import Prelude hiding (Monad, (>>=), fail, (.))
 > import qualified Prelude as P
+> import Restricted
 
-# Distribution RMonad
+Distribution RMonad
+===================
 
 First we define a new type Dist as a map from an index (or event) type a and a probability type prob
 
@@ -75,4 +81,4 @@ We can use the restricted category to define a conditional distribution type
 
 \appendix
 
-\include{restricted}
+\include{Restricted}

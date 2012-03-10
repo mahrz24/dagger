@@ -1,6 +1,11 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$]{$documentclass$}
 
-%include polycode.fmt
+%include $format$
+%include lambda.fmt
+%include colorcode.fmt
+%include dagger.fmt
+
+\barhs
 
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -8,6 +13,7 @@
   \usepackage{fontspec,xltxtra,xunicode}
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
+
 \else
   \ifluatex
     \usepackage{fontspec}
@@ -18,6 +24,11 @@
     \usepackage{eurosym}
   \fi
 \fi
+
+\usepackage{mathpazo}
+\setmainfont{Alegreya}
+\setsansfont{Aller}
+
 $if(natbib)$
 \usepackage{natbib}
 \bibliographystyle{plainnat}
